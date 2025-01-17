@@ -168,7 +168,6 @@ Your favorite books (in no particular order)
            value="Wonderland"
            title="The last name"
            id="wd-text-fields-last-name" />
-    {/* copy rest of form elements here  */}
   </form>
 </div>
 <h5>Text boxes</h5>
@@ -262,7 +261,7 @@ Your favorite books (in no particular order)
         </div>
         <h4>Anchor tag</h4>
 Please 
-<a href="https://www.lipsum.com" id="wd-lipsum">click here</a>
+<a href="https://www.lipsum.com" id="wd-lipsum"> click here </a>
 to get dummy text<br/>
   </div>);}
   
