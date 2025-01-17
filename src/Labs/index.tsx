@@ -7,6 +7,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 export default function Labs() {
   return (
     <div id="wd-labs">
+      <h1>Zach Kaufman Online Section Spring 2025</h1>
       <h1>Labs</h1>
       <TOC />
       <Routes>
