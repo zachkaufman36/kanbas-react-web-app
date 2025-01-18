@@ -73,21 +73,21 @@ export default function AssignmentEditor() {
                 </td>
                 <td align="left" valign="top">
                     <label id="wd-assign-to">Assign to </label><br />
-                    <input id="wd-assign-to" /> <br /><br />
+                    <input id="wd-assign-to" defaultValue="Everyone"/> <br /><br />
                     <label id="wd-due-date">Due </label><br />
                     <input type="date"
-                        id="wd-due-date"/><br /><br />
+                        id="wd-due-date" value="2024-05-13"/><br /><br />
                     <table>
                         <tr>
                             <td>
                         <label id="wd-available-from">Available from</label><br />
                         <input type="date"
-                            id="wd-available-from"/>
+                            id="wd-available-from" value="2024-05-06"/>
                         </td>
                         <td>
                         <label id="wd-available-until">Until</label><br />
                         <input type="date"
-                            id="wd-available-until"/><br />
+                            id="wd-available-until" value= "2024-05-20"/><br />
                             </td>
                         </tr>
                     </table>
