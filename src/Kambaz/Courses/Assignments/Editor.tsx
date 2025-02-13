@@ -1,16 +1,24 @@
 import { Col, Form, Row } from "react-bootstrap";
 import AssignmentEditorButtons from "./AssignmentEditorButtons";
+import { assignments } from "../../Database";
+import { useParams } from "react-router";
 import "./editor.css";
 
 export default function AssignmentEditor() {
+    
+    const { aid } = useParams();
+    const filteredAssignments = assignments.filter((assignment: any) => assignment._id === aid);
+
     return (
       <div id="wd-assignments-editor">
+        
         <Form.Group as={Row} controlId="assignment-name" id="wd-name" className="mb-3">
             <Form.Label column sm={3}><b>Assignment Name</b></Form.Label>
             <Col sm={12}>
-                <Form.Control type="assignment-name"></Form.Control>
+                <Form.Control type="assignment-name" value={filteredAssignments[0].title}></Form.Control>
             </Col>
         </Form.Group>
+        
 
         <Form.Group as={Row} controlId="assignment-description" id="wd-description" className="mb-3">
             <Col sm={12}>
@@ -21,7 +29,7 @@ export default function AssignmentEditor() {
         <Form.Group as={Row} controlId="Points-for-assignment" id="wd-points" align="right" className="mb-3">
             <Form.Label column sm={3}><b>Points</b></Form.Label>
             <Col sm="9">
-                <Form.Control type="point-entry"></Form.Control>
+                <Form.Control type="point-entry" value={filteredAssignments[0].points}></Form.Control>
             </Col> 
         </Form.Group>
 
@@ -88,7 +96,7 @@ export default function AssignmentEditor() {
                 <Form.Group as={Row} controlId="due-date" id="wd-due-date" align="left" className="md-3">
                     <Form.Label column sm={3}><b>Due</b></Form.Label>
                     <Col sm={12}>
-                        <Form.Control type="date"/>
+                        <Form.Control type="datetime" value={filteredAssignments[0].due_date}/>
                     </Col>
 
                     <Form.Group controlId="availability-dates" className="md-3">
@@ -96,13 +104,13 @@ export default function AssignmentEditor() {
                             <Col md={6}>
                                 <Form.Group controlId="available-from" id="wd-available-from" className="md-3">
                                     <Form.Label><b>Available From</b></Form.Label>
-                                    <Form.Control type="date" />
+                                    <Form.Control type="datetime" value={filteredAssignments[0].release_date}/>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
                                 <Form.Group controlId="available-until-date" id="wd-available-until" className="md-3">
-                                    <Form.Label><b>Due</b></Form.Label>
-                                    <Form.Control type="date" /> 
+                                    <Form.Label><b>Until</b></Form.Label>
+                                    <Form.Control type="datetime" /> 
                                 </Form.Group>
                             </Col>
                         </Row>
