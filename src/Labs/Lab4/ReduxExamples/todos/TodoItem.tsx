@@ -1,6 +1,6 @@
 import { Button, ListGroup } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { deleteTodo, setTodo } from "./TodosReducer";
+import { deleteTodo, setTodo } from "./TodoReducer";
 
 export default function TodoItem({ todo }: {
     todo: { id: string; title: string };

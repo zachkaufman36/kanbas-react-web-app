@@ -7,8 +7,15 @@ import { useParams } from "react-router";
 import  { assignments } from "../../Database";
 import "./index.css"
 import AssingmentStatus from "./AssignmentStatus";
+import { useState } from "react";
+import { addAssignment, deleteAssignment, updateAssignment }
+  from "./reducer";
+import { useSelector, useDispatch } from "react-redux";
 export default function Assignments() {
   const { cid } = useParams();
+  const [assignmentName, setAssignmentName] = useState("");
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+  const dispatch = useDispatch();
 
     return (
       <div id="wd-assignments">
@@ -38,7 +45,9 @@ export default function Assignments() {
               <a href={`#/Kambaz/Courses/${cid}/Assignments/${assignment._id}`} className="wd-assignment-link" style={{ color: "black", textDecoration: "None"}}>
                 <b>{assignment.title}</b>
               </a>
-              <span><span id="wd-multiple-modules"> Multiple Modules</span> | <b>Not available until</b> {assignment.release_date} | Due {assignment.due_date} | {assignment.points}</span> <AssingmentStatus /> </ListGroup.Item>
+              <span><span id="wd-multiple-modules"> Multiple Modules</span> | <b>Not available until</b> {assignment.release_date} | Due {assignment.due_date} | {assignment.points}</span> <AssingmentStatus assignmentId = {assignment._id} 
+              updateAssignment={(assignmentId) => {dispatch(updateAssignment(assignmentId));}}
+              deleteAssignment={(assignmentId) => {dispatch(deleteAssignment(assignmentId));}}/> </ListGroup.Item>
             </ListGroup>
             ))}
           </ListGroup.Item> 
