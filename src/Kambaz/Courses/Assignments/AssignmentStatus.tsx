@@ -11,7 +11,7 @@ function deletePopup(
 }
 export default function AssingmentStatus(
     { assignmentId, deleteAssignment }:
-    { assignmentId: string; updateAssignment: (assignmentId: string) => void; deleteAssignment: (assignmentId: string) => void; }
+    { assignmentId: string; deleteAssignment: (assignmentId: string) => void; }
     ) {
     return (
         <div className="float-end">

@@ -1,13 +1,39 @@
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Form, FormControl, Row } from "react-bootstrap";
 import AssignmentEditorButtons from "./AssignmentEditorButtons";
-import { assignments } from "../../Database";
 import { useParams } from "react-router";
+import { updateAssignment, addAssignment } from "./reducer";
 import "./editor.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 
-export default function AssignmentEditor() {
-    
+export default function AssignmentEditor({ cid }:
+    {cid: string}
+) {
     const { aid } = useParams();
-    const filteredAssignments = assignments.filter((assignment: any) => assignment._id === aid);
+    const { assignments } = useSelector((state: any) => state.assignmentReducer);
+    let filteredAssignments = assignments.filter((assignment: any) => assignment._id === aid);
+    const dispatch = useDispatch();
+    function updateOrAdd({aid, title, course, release_date, due_date, points}:
+        {aid: string; title: string; course: string; release_date: string; due_date: string; points: string}
+    ) {
+        if (aid === "createNew") {
+            console.log("here");
+            dispatch(addAssignment({title: title, course: course, release_date: release_date, due_date: due_date, points: points}))
+        } else {
+            console.log("there");
+            dispatch(updateAssignment({_id: aid, title: title, course: course, release_date: release_date, due_date: due_date, points: points}))
+        }
+    }
+
+    if (filteredAssignments.length === 0) {
+        filteredAssignments = [{ _id: "createNew", title: null, course: null, release_date: null,  due_date: null, points: null}]
+    } 
+
+    const [assignmentTitle, setAssignmentTitle] = useState(filteredAssignments[0].title);
+    const [assignmentRd, setAssignmentRd] = useState(filteredAssignments[0].release_date);
+    const [assignmentDd, setAssignmentDd] = useState(filteredAssignments[0].due_date);
+    const [assignmentPoints, setAssignmentPoints] = useState(filteredAssignments[0].points);
+    console.log(assignmentTitle)
 
     return (
       <div id="wd-assignments-editor">
@@ -15,21 +41,21 @@ export default function AssignmentEditor() {
         <Form.Group as={Row} controlId="assignment-name" id="wd-name" className="mb-3">
             <Form.Label column sm={3}><b>Assignment Name</b></Form.Label>
             <Col sm={12}>
-                <Form.Control type="assignment-name" defaultValue={filteredAssignments[0].title}></Form.Control>
+                <FormControl type="assignment-name" defaultValue={filteredAssignments[0].title} onChange={ (e) => setAssignmentTitle(e.target.value) } ></FormControl>
             </Col>
         </Form.Group>
         
 
         <Form.Group as={Row} controlId="assignment-description" id="wd-description" className="mb-3">
             <Col sm={12}>
-                <Form.Control as='textarea' style={{ height : "400px", resize: "none"}} defaultValue="Please enter assignment description here..."/>
+                <FormControl as='textarea' style={{ height : "400px", resize: "none" }} defaultValue="Please enter assignment description here..."/>
             </Col>
         </Form.Group>
 
         <Form.Group as={Row} controlId="Points-for-assignment" id="wd-points" align="right" className="mb-3">
             <Form.Label column sm={3}><b>Points</b></Form.Label>
             <Col sm="9">
-                <Form.Control type="point-entry" defaultValue={filteredAssignments[0].points}></Form.Control>
+                <FormControl type="point-entry" defaultValue={filteredAssignments[0].points} onChange={(e) => setAssignmentPoints(e.target.value)}></FormControl>
             </Col> 
         </Form.Group>
 
@@ -96,7 +122,7 @@ export default function AssignmentEditor() {
                 <Form.Group as={Row} controlId="due-date" id="wd-due-date" align="left" className="md-3">
                     <Form.Label column sm={3}><b>Due</b></Form.Label>
                     <Col sm={12}>
-                        <Form.Control type="datetime" defaultValue={filteredAssignments[0].due_date}/>
+                        <FormControl type="datetime" defaultValue={filteredAssignments[0].due_date} onChange={(e) => setAssignmentDd(e.target.value)}/>
                     </Col>
 
                     <Form.Group controlId="availability-dates" className="md-3">
@@ -104,7 +130,7 @@ export default function AssignmentEditor() {
                             <Col md={6}>
                                 <Form.Group controlId="available-from" id="wd-available-from" className="md-3">
                                     <Form.Label><b>Available From</b></Form.Label>
-                                    <Form.Control type="datetime" defaultValue={filteredAssignments[0].release_date}/>
+                                    <FormControl type="datetime" defaultValue={filteredAssignments[0].release_date} onChange={(e) => setAssignmentRd(e.target.value)}/>
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
@@ -120,6 +146,9 @@ export default function AssignmentEditor() {
             </Col>
         </Form.Group>
         <hr />
-        <AssignmentEditorButtons />
+        <AssignmentEditorButtons 
+        cid={cid} 
+        
+        addAssignment={() => {console.log(assignmentTitle); (updateOrAdd({aid: aid ?? "createNew", title: assignmentTitle, course: cid, release_date: assignmentRd, due_date: assignmentDd, points: assignmentPoints}))}}/>
     </div>
-  );}  
+  );} 
