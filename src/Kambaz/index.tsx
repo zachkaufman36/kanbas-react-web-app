@@ -4,34 +4,18 @@ import Dashboard from "./Dashboard";
 import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
 import "./styles.css"
-import * as db from "./Database";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import ProtectedRoute from "./Account/ProtectedRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewCourse, updateCourse } from "./reducer";
 
 export default function Kambaz() {
-  const [courses, setCourses] = useState<any[]>(db.courses);
+  const { courses } = useSelector((state: any) => state.courseReducer);
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
-  const addNewCourse = () => {
-    setCourses([...courses, { ...course, _id: uuidv4() }]);
-  };
-  const deleteCourse = (courseId: any) => {
-    setCourses(courses.filter((course) => course._id !== courseId));
-  };
-  const updateCourse = () => {
-    setCourses(
-      courses.map((c) => {
-        if (c._id === course._id) {
-          return course;
-        } else {
-          return c;
-        }
-      })
-    );
-  };
+  const dispatch = useDispatch();
 
   return (
     <div id="wd-kambaz"> 
@@ -45,9 +29,8 @@ export default function Kambaz() {
               courses={courses}
               course={course}
               setCourse={setCourse}
-              addNewCourse={addNewCourse}
-              deleteCourse={deleteCourse}
-              updateCourse={updateCourse}/></ProtectedRoute>} />
+              addNewCourse={() => {dispatch(addNewCourse(course))}}
+              updateCourse={() => {dispatch(updateCourse(course))}}/></ProtectedRoute>} />
           <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses}/></ProtectedRoute>} />
         </Routes>
       </div>           

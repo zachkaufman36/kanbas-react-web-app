@@ -1,17 +1,21 @@
 import { Button, Card, Col, FormControl, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { deleteCourse } from "./reducer";
+import { useDispatch } from "react-redux";
 import * as db from "./Database";
 
 export default function Dashboard(
-    { courses, course, setCourse, addNewCourse,
-    deleteCourse, updateCourse }: {
-    courses: any[]; course: any; setCourse: (course: any) => void;
-    addNewCourse: () => void; deleteCourse: (course: any) => void;
+    { courses, course, setCourse, addNewCourse, updateCourse }: {
+    courses: any[]; 
+    course: any; 
+    setCourse: (course: any) => void;
+    addNewCourse: () => void; 
     updateCourse: () => void; }
   ) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = db;
+  const dispatch = useDispatch();
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -50,7 +54,7 @@ export default function Dashboard(
                 <Button variant="primary">Go</Button>
                 <button onClick={(event) => {
                       event.preventDefault();
-                      deleteCourse(course._id);
+                      dispatch(deleteCourse(course._id));
                     }} className="btn btn-danger float-end"
                     id="wd-delete-course-click">
                     Delete
