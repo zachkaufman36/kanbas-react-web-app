@@ -1,6 +1,7 @@
 import { IoEllipsisVertical } from "react-icons/io5";
 import { FaTrash } from "react-icons/fa";
 import GreenCheckmark from "./GreenCheckmark";
+import EditProtection from "../../Account/EditProtection";
 
 function deletePopup(
     { assignmentId, deleteAssignment }:
@@ -16,7 +17,9 @@ export default function AssingmentStatus(
     return (
         <div className="float-end">
             <GreenCheckmark />  
-            <FaTrash className = "text-danger me-1" onClick={() => deletePopup({assignmentId, deleteAssignment})}/>
+            <EditProtection>
+                <FaTrash className = "text-danger me-1" onClick={() => deletePopup({assignmentId, deleteAssignment})}/>
+            </EditProtection>
             <IoEllipsisVertical className="fs-4" />
         </div>
     );

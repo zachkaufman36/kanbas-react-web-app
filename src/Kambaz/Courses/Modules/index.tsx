@@ -8,7 +8,7 @@ import { FormControl } from "react-bootstrap";
 import { addModule, editModule, updateModule, deleteModule }
   from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
-import ModuleProtection from "../../Account/ModuleProtection";
+import EditProtection from "../../Account/EditProtection";
 
 export default function Modules() {
   const { cid } = useParams();
@@ -18,10 +18,10 @@ export default function Modules() {
 
     return (
       <div>
-        <ModuleProtection>
+        <EditProtection>
         <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={() => {
           dispatch(addModule({ name: moduleName, course: cid }));
-          setModuleName("");}} /></ModuleProtection><br /><br /><br /><br />
+          setModuleName("");}} /></EditProtection><br /><br /><br /><br />
         <ul className="list-group rounded-0" id="wd-modules">
           {modules.filter((module: any) => module.course === cid).map((module: any) => (
             <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
@@ -38,14 +38,14 @@ export default function Modules() {
                       defaultValue={module.name}/>
               )}
               { /* Does this hide too much */ }
-              <ModuleProtection>
+              <EditProtection>
                 <ModuleControlButtons
                   moduleId={module._id}
                   deleteModule={(moduleId) => {
                     dispatch(deleteModule(moduleId));
                   }}
                   editModule={(moduleId) => dispatch(editModule(moduleId))}/>
-              </ModuleProtection>
+              </EditProtection>
             </div>
             {module.lessons && (
               <ul className="wd-lessons list-group rounded-0">

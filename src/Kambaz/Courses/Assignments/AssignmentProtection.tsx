@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
-export default function ModuleProtection({ children }: { children: any }) {
+export default function AssignmentProtection() {
+
     const { currentUser } = useSelector((state: any) => state.accountReducer)
     if (currentUser.role === "FACULTY") {
-        return children;
+        return true;
     } else {
-        return;
+        return false;
     }
 }

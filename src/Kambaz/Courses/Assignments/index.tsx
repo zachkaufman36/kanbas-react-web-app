@@ -9,11 +9,26 @@ import AssingmentStatus from "./AssignmentStatus";
 import { deleteAssignment }
   from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import EditProtection from "../../Account/EditProtection";
+import AssignmentProtection from "./AssignmentProtection";
 
 export default function Assignments() {
   const { cid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentReducer);
   const dispatch = useDispatch();
+  
+  function AssignmentName({assignmentId, assignmentTitle}: {assignmentId: string; assignmentTitle: string}) {
+    if (AssignmentProtection()) {
+      return (<a href={`#/Kambaz/Courses/${cid}/Assignments/${assignmentId}`} className="wd-assignment-link" style={{ color: "black", textDecoration: "None"}}>
+      <b>{assignmentTitle}</b>
+    </a>)
+    } else {
+      return (<a className="wd-assignment-link" style={{ color: "black", textDecoration: "None"}}>
+        <b>{assignmentTitle}</b>
+      </a>)
+    }
+  }
+
   console.log(assignments)
     return (
       <div id="wd-assignments">
@@ -29,7 +44,9 @@ export default function Assignments() {
           </FormGroup>
           
           <div className="flex-shrink-0">
+            <EditProtection>
             <AssignmentControls />
+            </EditProtection>
           </div>
         </div>
         <ListGroup className="rounded-0" id="wd-modules">
@@ -40,9 +57,10 @@ export default function Assignments() {
               <ListGroup className="wd-lessons rounded-0">
               <ListGroup.Item className="wd-lesson p-3 ps-1">
               <BsGripVertical className="me-2 fs-3" /> <IoIosPaper className="text-success me-2 fs-3"/> 
-              <a href={`#/Kambaz/Courses/${cid}/Assignments/${assignment._id}`} className="wd-assignment-link" style={{ color: "black", textDecoration: "None"}}>
+              {/* <a href={`#/Kambaz/Courses/${cid}/Assignments/${assignment._id}`} className="wd-assignment-link" style={{ color: "black", textDecoration: "None"}}>
                 <b>{assignment.title}</b>
-              </a>
+              </a> */}
+              <AssignmentName assignmentTitle={assignment.title} assignmentId={assignment._id} />
               <span><span id="wd-multiple-modules"> Multiple Modules</span> | <b>Not available until</b> {assignment.release_date} | Due {assignment.due_date} | {assignment.points}</span> <AssingmentStatus assignmentId = {assignment._id}
               deleteAssignment={(assignmentId) => {dispatch(deleteAssignment(assignmentId));}}/> </ListGroup.Item>
             </ListGroup>

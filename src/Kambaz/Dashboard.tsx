@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { deleteCourse } from "./reducer";
 import { useDispatch } from "react-redux";
 import * as db from "./Database";
+import EditProtection from "./Account/EditProtection";
 
 export default function Dashboard(
     { courses, course, setCourse, addNewCourse, updateCourse }: {
@@ -20,6 +21,7 @@ export default function Dashboard(
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
       <h5>New Course
+        <EditProtection>
           <button className="btn btn-primary float-end"
                   id="wd-add-new-course-click"
                   onClick={addNewCourse} > Add </button>
@@ -27,6 +29,7 @@ export default function Dashboard(
                 onClick={updateCourse} id="wd-update-course-click">
           Update
           </button>
+        </EditProtection>
       </h5><br />
       <FormControl value={course.name} className="mb-2" 
         onChange={(e) => setCourse({ ...course, name: e.target.value }) } />
@@ -52,6 +55,7 @@ export default function Dashboard(
                 <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
                 <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>{course.description}</Card.Text>
                 <Button variant="primary">Go</Button>
+                <EditProtection>
                 <button onClick={(event) => {
                       event.preventDefault();
                       dispatch(deleteCourse(course._id));
@@ -68,6 +72,7 @@ export default function Dashboard(
                   className="btn btn-warning me-2 float-end" >
                   Edit
                 </button>
+                </EditProtection>
               </Card.Body>
               </Link>
             </Card>
