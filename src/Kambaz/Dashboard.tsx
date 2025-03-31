@@ -15,7 +15,7 @@ export default function Dashboard(
     updateCourse: () => void; }
   ) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.courseReducer);
+  
   const dispatch = useDispatch();
   const [enrolling, setEnrolling] = useState(false);
 
@@ -35,18 +35,6 @@ export default function Dashboard(
     } else {
       return 
     }
-  }
-
-  function DisplayCourses({ enrolling }: { enrolling: boolean }) {
-    if (!enrolling) {
-      return courses.filter((course) =>
-        enrollments.some(
-          (enrollment: {_id: string; user: string; course: string; }) =>
-            enrollment.user === currentUser._id &&
-            enrollment.course === course._id
-          ))
-    }
-    return courses
   }
 
   type user = {
@@ -73,16 +61,9 @@ export default function Dashboard(
     credits: number;
     description: string }
 
-  function EnrollorUnEnroll({ enrolling, user, enrollments, course }: { enrolling: boolean; user: user; enrollments: any[]; course: course}) {
-    const isEnrolled = 
-      enrollments.some(
-        (enrollment) =>
-          enrollment.user === user._id &&
-          enrollment.course === course._id)
+  function EnrollorUnEnroll({ user, course }: { user: user; course: course}) {
 
-    if (enrolling) {
-      if (!isEnrolled) {
-        return (
+      return (
           <div
               className="wd-dashboard-course-link text-decoration-none text-dark">
           <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
@@ -99,40 +80,9 @@ export default function Dashboard(
         </button>
         </Card.Body>
         </div>)
-      } else {
-        return (
-          <Link to={`/Kambaz/Courses/${course._id}/Home`}
-              className="wd-dashboard-course-link text-decoration-none text-dark">
-          <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
-          <Card.Body className="card-body">
-            <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
-            <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>{course.description}</Card.Text>
-            <Button variant="primary">Go</Button>
-        <button onClick={(event) => {
-          event.preventDefault();
-          dispatch(unenroll(({userId: user._id, courseId: course._id})));
-        }} className="btn btn-danger float-end"
-        id="wd-delete-course-click">
-        Unenroll
-        </button>
-        </Card.Body>
-        </Link>
-        )
-      } 
-    } else {
-      return (
-        <Link to={`/Kambaz/Courses/${course._id}/Home`}
-              className="wd-dashboard-course-link text-decoration-none text-dark">
-          <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
-          <Card.Body className="card-body">
-            <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
-            <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>{course.description}</Card.Text>
-            <Button variant="primary">Go</Button>
-          </Card.Body>
-        </Link>
-      )
+
+      
     }
-  }
 
   return (
     <div id="wd-dashboard">
@@ -148,11 +98,11 @@ export default function Dashboard(
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4" >
-          {DisplayCourses({enrolling})
+          {courses
 .map((course) => (
           <Col className="wd-dashboard-course" style={{ width: "300px" }}>
             <Card>
-                <EnrollorUnEnroll enrolling={enrolling} user={currentUser} enrollments={enrollments} course={course}/>
+                <EnrollorUnEnroll user={currentUser} course={course}/>
                 <EditProtection>
                 <button onClick={(event) => {
                       event.preventDefault();
