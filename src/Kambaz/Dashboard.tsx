@@ -23,9 +23,12 @@ export default function Dashboard(
   
   const dispatch = useDispatch();
 
-  const unenrollUser = async (currentUser: any, course: any) => {
+  // This is happening, however you have to click enroll for it to properly display
+  const unenrollUser = async (event: any, currentUser: any, course: any) => {
     console.log(enrollments);
+    event.preventDefault();
     await enrollmentClient.unenrollUserInCourse(currentUser, course);
+    console.log("Hello from after await");
     setEnrollments((prevEnrollments: any) => prevEnrollments.filter((enrollment: any) => !(enrollment.user === currentUser._id && enrollment.course === course._id)));
     dispatch(unenroll({userId: currentUser._id, courseId: course._id}))
   }
@@ -125,9 +128,8 @@ export default function Dashboard(
             <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
             <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>{course.description}</Card.Text>
             <Button variant="primary">Go</Button>
-        <button onClick={(event) => {
-          event.preventDefault();
-          unenrollUser(user, course);
+        <button onClick={(event) => {  
+          unenrollUser(event, user, course);
           fetchEnrollments();
         }} className="btn btn-danger float-end"
         id="wd-delete-course-click">
