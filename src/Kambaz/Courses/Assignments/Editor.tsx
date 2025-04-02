@@ -5,6 +5,8 @@ import { updateAssignment, addAssignment } from "./reducer";
 import "./editor.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
 
 export default function AssignmentEditor({ cid }:
     {cid: string}
@@ -13,15 +15,14 @@ export default function AssignmentEditor({ cid }:
     const { assignments } = useSelector((state: any) => state.assignmentReducer);
     let filteredAssignments = assignments.filter((assignment: any) => assignment._id === aid);
     const dispatch = useDispatch();
+
     function updateOrAdd({aid, title, course, release_date, due_date, points}:
         {aid: string; title: string; course: string; release_date: string; due_date: string; points: string}
     ) {
         if (aid === "createNew") {
-            console.log("here");
-            dispatch(addAssignment({title: title, course: course, release_date: release_date, due_date: due_date, points: points}))
+            createAssignmentForCourse(title, course, release_date, due_date, points);
         } else {
-            console.log("there");
-            dispatch(updateAssignment({_id: aid, title: title, course: course, release_date: release_date, due_date: due_date, points: points}))
+            saveAssignment({_id: aid, title: title, course: course, release_date: release_date, due_date: due_date, points: points})
         }
     }
 
@@ -33,7 +34,19 @@ export default function AssignmentEditor({ cid }:
     const [assignmentRd, setAssignmentRd] = useState(filteredAssignments[0].release_date);
     const [assignmentDd, setAssignmentDd] = useState(filteredAssignments[0].due_date);
     const [assignmentPoints, setAssignmentPoints] = useState(filteredAssignments[0].points);
-    console.log(assignmentTitle)
+    
+    const saveAssignment = async (assignment: any) => {
+        await assignmentsClient.updateAssignment(assignment);
+        dispatch(updateAssignment(assignment));
+      };
+    
+
+    const createAssignmentForCourse = async (title: string, course: string, release_date: string, due_date: string, points: string) => {
+        if (!cid) return;
+        const newAssignment = {title: title, course: course, release_date: release_date, due_date: due_date, points: points};
+        const assignment = await coursesClient.createAssignmentForCourse(cid, newAssignment);
+        dispatch(addAssignment(assignment));
+    };
 
     return (
       <div id="wd-assignments-editor">
@@ -149,6 +162,6 @@ export default function AssignmentEditor({ cid }:
         <AssignmentEditorButtons 
         cid={cid} 
         
-        addAssignment={() => {console.log(assignmentTitle); (updateOrAdd({aid: aid ?? "createNew", title: assignmentTitle, course: cid, release_date: assignmentRd, due_date: assignmentDd, points: assignmentPoints}))}}/>
+        addAssignment={() => {(updateOrAdd({aid: aid ?? "createNew", title: assignmentTitle, course: cid, release_date: assignmentRd, due_date: assignmentDd, points: assignmentPoints}))}}/>
     </div>
   );} 

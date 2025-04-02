@@ -7,7 +7,6 @@ export default function CourseNavigation() {
   
   const { cid } = useParams();
   const { pathname } = useLocation();
-  console.log(pathname);
   return (
     
     <ListGroup id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
