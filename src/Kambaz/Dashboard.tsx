@@ -5,10 +5,9 @@ import { useDispatch } from "react-redux";
 import EditProtection from "./Account/EditProtection";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import * as enrollmentClient from "./client";
 
 export default function Dashboard(
-    { courses, enrolling, setEnrolling, course, setCourse, addNewCourse, updateCourse, deleteCourse }: {
+    { courses, enrolling, setEnrolling, course, setCourse, addNewCourse, updateCourse, deleteCourse, updateEnrollment }: {
     courses: any[]; 
     enrolling: boolean;
     setEnrolling: (enrolling: boolean) => void;
@@ -16,39 +15,10 @@ export default function Dashboard(
     setCourse: (course: any) => void;
     addNewCourse: () => void; 
     updateCourse: () => void;
-    deleteCourse: (courseId: any) => void; }
+    deleteCourse: (courseId: any) => void
+    updateEnrollment: (courseId: string, enrolled: boolean) => void ; }
   ) {
-  const [enrollments, setEnrollments] = useState<any>([]);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  
-  const dispatch = useDispatch();
-
-  // This is happening, however you have to click enroll for it to properly display
-  const unenrollUser = async (event: any, currentUser: any, course: any) => {
-    console.log(enrollments);
-    event.preventDefault();
-    await enrollmentClient.unenrollUserInCourse(currentUser, course);
-    console.log("Hello from after await");
-    setEnrollments((prevEnrollments: any) => prevEnrollments.filter((enrollment: any) => !(enrollment.user === currentUser._id && enrollment.course === course._id)));
-    dispatch(unenroll({userId: currentUser._id, courseId: course._id}))
-  }
-
-  const enrollUser = async (currentUser: any, course: any) => {
-    const newEnrollment = await enrollmentClient.enrollUserInCourse(currentUser, course);
-    setEnrollments([...enrollments, newEnrollment]);
-    dispatch(enroll(newEnrollment));
-  }
-
-  const fetchEnrollments = async () => {
-      const enrollments = await enrollmentClient.fetchAllEnrollments();
-      setEnrollments(enrollments);
-  };
-
-  useEffect(() => {
-    fetchEnrollments();
-  }, []);
-
-  //console.log(enrollments)
 
   function ButtonsForTypeOfUser({ enrolling, setEnrolling }: { enrolling: boolean, setEnrolling: (value: boolean) => void }) {
     if (currentUser.role === "FACULTY") {
@@ -67,40 +37,13 @@ export default function Dashboard(
       return 
     }
   }
-
-  type user = {
-    _id: string,
-    username: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    dob: string;
-    role: string;
-    loginId: string;
-    section: string;
-    lastActivity: string;
-    totalActivity: string }
-
-    type course = {
-      _id: string;
-    name: string;
-    number: string;
-    startDate: string;
-    endDate: string;
-    department: string;
-    credits: number;
-    description: string }
-
-  function EnrollorUnEnroll({enrolling, user, course }: {enrolling: boolean; user: user; course: course}) {
-    const isEnrolled = 
-      enrollments.some(
-        (enrollment: any) =>
-          enrollment.user === user._id &&
-          enrollment.course === course._id)
-
+  
+  function EnrollorUnEnroll({ enrolling, course }: {enrolling: boolean; course: any}) {
+    if (!course) {
+      return <div>Loading course...</div>;
+    }
     if (enrolling) {
-      if (!isEnrolled) {
+      if (!course.enrolled) {
         return (
           <div
               className="wd-dashboard-course-link text-decoration-none text-dark">
@@ -111,8 +54,7 @@ export default function Dashboard(
             <Button variant="primary">Go</Button>
         <button onClick={(event) => {
           event.preventDefault();
-          enrollUser(user, course);
-          fetchEnrollments();
+          updateEnrollment(course._id, !course.enrolled);
         }} className="btn btn-success float-end"
         id="wd-delete-course-click">
         Enroll
@@ -128,9 +70,9 @@ export default function Dashboard(
             <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">{course.name}</Card.Title>
             <Card.Text  className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>{course.description}</Card.Text>
             <Button variant="primary">Go</Button>
-        <button onClick={(event) => {  
-          unenrollUser(event, user, course);
-          fetchEnrollments();
+        <button onClick={(event) => { 
+          event.preventDefault(); 
+          updateEnrollment(course._id, !course.enrolled);
         }} className="btn btn-danger float-end"
         id="wd-delete-course-click">
         Unenroll
@@ -171,7 +113,7 @@ export default function Dashboard(
           {Array.isArray(courses) ? courses.map((course) => (
           <Col className="wd-dashboard-course" style={{ width: "300px" }}>
             <Card>
-                <EnrollorUnEnroll enrolling={enrolling} user={currentUser} course={course}/>
+                <EnrollorUnEnroll enrolling={enrolling} course={course}/>
                 <EditProtection>
                 <button onClick={(event) => {
                       event.preventDefault();

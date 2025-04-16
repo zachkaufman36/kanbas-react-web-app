@@ -25,12 +25,13 @@ export default function Assignments() {
   };
 
   const fetchAssignments = async () => {
+    console.log(cid);
     const assignments = await coursesClient.findAssignmentsForCourse(cid as string);
     dispatch(setAssignments(assignments));
   };
   useEffect(() => {
     fetchAssignments();
-  }, []);
+  }, [cid]);
 
   function AssignmentName({assignmentId, assignmentTitle}: {assignmentId: string; assignmentTitle: string}) {
     if (AssignmentProtection()) {
